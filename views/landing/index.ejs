@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>NovaBuilder — Create Websites With AI</title>
+  <%- include('../partials/head') %>
+</head>
+<body class="relative overflow-x-hidden scroll-smooth">
+
+  <!-- Aurora background -->
+  <div class="fixed -top-40 -left-40 w-96 h-96 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="fixed top-1/4 -right-32 w-96 h-96 bg-accent/20 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="fixed bottom-0 left-1/3 w-96 h-96 bg-secondary/20 rounded-full blur-3xl pointer-events-none"></div>
+
+  <%- include('../partials/landing-navbar') %>
+
+  <!-- HERO -->
+  <section class="relative z-10 max-w-5xl mx-auto text-center px-6 pt-40 pb-24 scroll-mt-24">
+    <span class="inline-block text-xs font-semibold tracking-wide text-secondary bg-secondary/10 border border-secondary/30 rounded-full px-4 py-1.5 mb-6">
+      ✨ AI POWERED — FRONTEND + BACKEND
+    </span>
+    <h1 class="text-4xl sm:text-6xl font-bold font-heading leading-tight mb-5">
+      Build Your Website<br />
+      <span class="bg-aurora-gradient bg-clip-text text-transparent">With AI</span>
+    </h1>
+    <p class="text-muted text-lg mb-10 max-w-2xl mx-auto">
+      Describe your idea and get a beautiful, responsive website — complete with real backend
+      functionality like logins, bookings, and forms — in seconds. No coding required.
+    </p>
+
+    <form action="/register" method="GET" class="max-w-2xl mx-auto">
+      <div class="card-glass p-3 flex flex-col sm:flex-row gap-3 items-stretch">
+        <input id="promptInput" type="text" class="input-field flex-1 border-none bg-transparent" placeholder="Create a restaurant website with online booking...">
+        <button type="submit" class="btn-primary whitespace-nowrap">✨ Generate Website</button>
+      </div>
+    </form>
+
+    <p class="text-muted text-xs mt-4">No coding • Free to start • AI powered • Real backend included</p>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="relative z-10 max-w-6xl mx-auto px-6 py-20 scroll-mt-24">
+    <div class="text-center mb-12">
+      <span class="text-xs font-semibold tracking-wide text-accent uppercase">Features</span>
+      <h2 class="text-3xl sm:text-4xl font-bold mt-2">Everything you need to launch</h2>
+      <p class="text-muted mt-3 max-w-xl mx-auto">A complete platform — not just a page designer.</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="card-glass p-6 hover:border-primary/40 border border-transparent transition-colors">
+        <p class="text-2xl mb-3">✨</p>
+        <h3 class="font-semibold mb-2">AI Website Generator</h3>
+        <p class="text-muted text-sm">Describe your business in one sentence and get full pages, content, colors, and layout instantly.</p>
+      </div>
+      <div class="card-glass p-6 hover:border-primary/40 border border-transparent transition-colors">
+        <p class="text-2xl mb-3">🎨</p>
+        <h3 class="font-semibold mb-2">Visual Drag &amp; Drop Editor</h3>
+        <p class="text-muted text-sm">Rearrange sections, tweak typography, colors and spacing — no code needed, ever.</p>
+      </div>
+      <div class="card-glass p-6 hover:border-primary/40 border border-transparent transition-colors">
+        <p class="text-2xl mb-3">🗄️</p>
+        <h3 class="font-semibold mb-2">Real Backend Included</h3>
+        <p class="text-muted text-sm">Contact forms, bookings, member logins, and newsletters — backed by a real database automatically.</p>
+      </div>
+      <div class="card-glass p-6 hover:border-primary/40 border border-transparent transition-colors">
+        <p class="text-2xl mb-3">📱</p>
+        <h3 class="font-semibold mb-2">Fully Responsive</h3>
+        <p class="text-muted text-sm">Every generated site adapts cleanly across desktop, tablet, and mobile out of the box.</p>
+      </div>
+      <div class="card-glass p-6 hover:border-primary/40 border border-transparent transition-colors">
+        <p class="text-2xl mb-3">🔍</p>
+        <h3 class="font-semibold mb-2">Built-in SEO</h3>
+        <p class="text-muted text-sm">Titles, meta descriptions, sitemaps and Open Graph tags generated and editable per page.</p>
+      </div>
+      <div class="card-glass p-6 hover:border-primary/40 border border-transparent transition-colors">
+        <p class="text-2xl mb-3">📊</p>
+        <h3 class="font-semibold mb-2">Analytics Dashboard</h3>
+        <p class="text-muted text-sm">Track visitors, page views, devices and traffic sources for every site you publish.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEMPLATES -->
+  <section id="templates" class="relative z-10 max-w-6xl mx-auto px-6 py-20 scroll-mt-24">
+    <div class="text-center mb-12">
+      <span class="text-xs font-semibold tracking-wide text-accent uppercase">Templates</span>
+      <h2 class="text-3xl sm:text-4xl font-bold mt-2">Start from any category</h2>
+      <p class="text-muted mt-3 max-w-xl mx-auto">The AI adapts structure, copy, and design to match your business type.</p>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+      <% const templateCategories = [
+        { icon: "💼", name: "Business" },
+        { icon: "🎨", name: "Portfolio" },
+        { icon: "🍽️", name: "Restaurant" },
+        { icon: "🎓", name: "Education" },
+        { icon: "🛍️", name: "E-commerce" },
+        { icon: "🏋️", name: "Gym & Fitness" },
+        { icon: "💇", name: "Salon & Spa" },
+        { icon: "🏨", name: "Hotel" },
+        { icon: "⚖️", name: "Legal" },
+        { icon: "🩺", name: "Medical" },
+        { icon: "📸", name: "Photography" },
+        { icon: "📝", name: "Blog" }
+      ]; %>
+      <% templateCategories.forEach(t => { %>
+        <a href="/register" class="card-glass p-4 text-center hover:border-primary/40 border border-transparent transition-colors">
+          <p class="text-2xl mb-2"><%= t.icon %></p>
+          <p class="text-sm font-medium"><%= t.name %></p>
+        </a>
+      <% }) %>
+    </div>
+
+    <p class="text-center text-muted text-sm mt-8">
+      Don't see your category? Just describe it — the AI builder supports any business type.
+    </p>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how-it-works" class="relative z-10 max-w-5xl mx-auto px-6 py-20 text-center scroll-mt-24">
+    <span class="text-xs font-semibold tracking-wide text-accent uppercase">Process</span>
+    <h2 class="text-3xl sm:text-4xl font-bold mt-2 mb-12">How It Works</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-4 gap-8">
+      <div>
+        <div class="w-12 h-12 mx-auto rounded-full bg-aurora-gradient flex items-center justify-center font-bold mb-4">01</div>
+        <h3 class="font-semibold mb-1">Describe</h3>
+        <p class="text-muted text-sm">Tell us about your website idea in one sentence.</p>
+      </div>
+      <div>
+        <div class="w-12 h-12 mx-auto rounded-full bg-aurora-gradient flex items-center justify-center font-bold mb-4">02</div>
+        <h3 class="font-semibold mb-1">AI Builds</h3>
+        <p class="text-muted text-sm">Pages, content, design, and backend features are generated.</p>
+      </div>
+      <div>
+        <div class="w-12 h-12 mx-auto rounded-full bg-aurora-gradient flex items-center justify-center font-bold mb-4">03</div>
+        <h3 class="font-semibold mb-1">Customize</h3>
+        <p class="text-muted text-sm">Drag, drop, and edit anything in the visual builder.</p>
+      </div>
+      <div>
+        <div class="w-12 h-12 mx-auto rounded-full bg-aurora-gradient flex items-center justify-center font-bold mb-4">04</div>
+        <h3 class="font-semibold mb-1">Publish</h3>
+        <p class="text-muted text-sm">Go live instantly with a real, working public URL.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI BUILDER — Frontend + Backend explainer -->
+  <section id="ai-builder" class="relative z-10 max-w-6xl mx-auto px-6 py-20 scroll-mt-24">
+    <div class="text-center mb-12">
+      <span class="text-xs font-semibold tracking-wide text-accent uppercase">AI Builder</span>
+      <h2 class="text-3xl sm:text-4xl font-bold mt-2">Not just a page — a full application</h2>
+      <p class="text-muted mt-3 max-w-2xl mx-auto">
+        NovaBuilder's AI reads what you ask for and automatically wires up matching backend
+        functionality — real database storage, not just static HTML.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+      <div class="card-glass p-6">
+        <p class="text-sm text-muted mb-2">You type:</p>
+        <p class="font-mono text-sm bg-surface/60 rounded-lg p-4 mb-6 border border-white/5">
+          "Create a restaurant website where customers can book a table and sign up for our newsletter"
+        </p>
+        <p class="text-sm text-muted mb-3">NovaBuilder automatically detects and builds:</p>
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 text-sm"><span class="text-success">✓</span> Home, Menu, About &amp; Contact pages</div>
+          <div class="flex items-center gap-2 text-sm"><span class="text-success">✓</span> <strong>Booking form</strong> — saved to a real database</div>
+          <div class="flex items-center gap-2 text-sm"><span class="text-success">✓</span> <strong>Newsletter signup</strong> — with subscriber list</div>
+          <div class="flex items-center gap-2 text-sm"><span class="text-success">✓</span> Color palette, fonts, and layout matched to "restaurant"</div>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <div class="card-glass p-5 flex items-start gap-4">
+          <span class="text-2xl">🔐</span>
+          <div>
+            <h3 class="font-semibold mb-1">Member Login & Signup</h3>
+            <p class="text-muted text-sm">Say "let visitors create an account" — real, password-hashed authentication is generated for your site's visitors.</p>
+          </div>
+        </div>
+        <div class="card-glass p-5 flex items-start gap-4">
+          <span class="text-2xl">📅</span>
+          <div>
+            <h3 class="font-semibold mb-1">Bookings & Reservations</h3>
+            <p class="text-muted text-sm">Mention booking, appointments, or reservations — a working form with owner-side management is added automatically.</p>
+          </div>
+        </div>
+        <div class="card-glass p-5 flex items-start gap-4">
+          <span class="text-2xl">✉️</span>
+          <div>
+            <h3 class="font-semibold mb-1">Newsletters &amp; Contact Forms</h3>
+            <p class="text-muted text-sm">Every submission is stored safely — view leads and subscribers right from your dashboard.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-12">
+      <a href="/register" class="btn-primary inline-block px-8">✨ Try the AI Builder Free</a>
+    </div>
+  </section>
+
+  <footer class="relative z-10 border-t border-white/5 py-8 text-center text-muted text-sm">
+    © 2026 NovaBuilder. All rights reserved.
+  </footer>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

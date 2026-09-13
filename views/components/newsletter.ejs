@@ -1,0 +1,30 @@
+<section class="px-6 py-14 max-w-md mx-auto text-center">
+  <h2 class="text-2xl font-bold mb-2"><%= section.content.heading || 'Stay Updated' %></h2>
+  <p class="text-muted text-sm mb-6"><%= section.content.subtext || 'Subscribe for news and updates.' %></p>
+  <form class="site-newsletter-form flex gap-2" data-slug="<%= website.slug %>">
+    <input type="email" name="email" required class="input-field flex-1" placeholder="you@example.com" />
+    <button type="submit" class="btn-primary whitespace-nowrap">Subscribe</button>
+  </form>
+  <p class="newsletter-status text-sm mt-3 hidden"></p>
+</section>
+
+<script>
+  document.querySelectorAll(".site-newsletter-form").forEach((form) => {
+    if (form.dataset.bound) return;
+    form.dataset.bound = "true";
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const status = form.querySelector(".newsletter-status");
+      const data = Object.fromEntries(new FormData(form).entries());
+      data.websiteSlug = form.dataset.slug;
+
+      const res = await fetch("/site-backend/subscribe", {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      status.textContent = result.message;
+      status.className = `newsletter-status text-sm mt-3 ${result.success ? "text-success" : "text-red-400"}`;
+      if (result.success) form.reset();
+    });
+  });
+</script>

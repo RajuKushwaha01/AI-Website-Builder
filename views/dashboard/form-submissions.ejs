@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Submissions • NovaBuilder</title>
+  <%- include('../partials/head') %>
+</head>
+<body class="min-h-screen">
+  <%- include('../partials/navbar') %>
+  <%- include('../partials/sidebar', { active: 'forms' }) %>
+
+  <main class="lg:ml-64 max-w-4xl mx-auto px-6 pt-28 pb-16">
+    <h1 class="text-3xl font-bold mb-8">Submissions — <%= form.name %></h1>
+
+    <div class="card-glass overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-white/10 text-left text-muted">
+            <% form.fields.forEach(f => { %><th class="p-3"><%= f.label %></th><% }) %>
+            <th class="p-3">Date</th>
+            <th class="p-3">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% submissions.forEach(sub => { %>
+            <tr class="border-b border-white/5 <%= sub.read ? '' : 'font-semibold' %>" data-id="<%= sub._id %>">
+              <% form.fields.forEach(f => { %><td class="p-3"><%= sub.data[f.label] || '—' %></td><% }) %>
+              <td class="p-3 text-muted"><%= new Date(sub.createdAt).toLocaleString() %></td>
+              <td class="p-3 flex gap-2">
+                <% if (!sub.read) { %><button class="mark-read-btn text-secondary text-xs">Mark Read</button><% } %>
+                <button class="delete-sub-btn text-red-400 text-xs" data-id="<%= sub._id %>">Delete</button>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <% if (submissions.length === 0) { %><p class="text-muted p-6">No submissions yet.</p><% } %>
+    </div>
+  </main>
+
+  <script>
+    document.querySelectorAll(".mark-read-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const row = btn.closest("tr");
+        await fetch(`/submissions/${row.dataset.id}/read`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ _csrf: "<%= csrfToken %>" })
+        });
+        row.classList.remove("font-semibold");
+        btn.remove();
+      });
+    });
+
+    document.querySelectorAll(".delete-sub-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        if (!confirm("Delete this submission?")) return;
+        await fetch(`/submissions/${btn.dataset.id}/delete`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ _csrf: "<%= csrfToken %>" })
+        });
+        btn.closest("tr").remove();
+      });
+    });
+  </script>
+  <script src="/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Forms • NovaBuilder</title>
+  <%- include('../partials/head') %>
+</head>
+<body class="min-h-screen">
+  <%- include('../partials/navbar') %>
+  <%- include('../partials/sidebar', { active: 'forms' }) %>
+
+  <div class="lg:pl-64 flex justify-center">
+  <main class="w-full max-w-3xl px-4 sm:px-6 pt-24 sm:pt-28 pb-16">
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-8">
+      <h1 class="text-2xl sm:text-3xl font-bold">Forms</h1>
+      <select id="websiteSelect" class="input-field sm:w-56">
+        <option value="">+ New form on...</option>
+        <% websites.forEach(w => { %><option value="<%= w._id %>"><%= w.name %></option><% }) %>
+      </select>
+    </div>
+
+    <div class="space-y-3">
+      <% forms.forEach(form => { %>
+        <div class="card-glass p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <p class="font-semibold"><%= form.name %></p>
+            <p class="text-muted text-xs mt-1"><%= form.website?.name %> · <%= form.fields.length %> fields</p>
+          </div>
+          <div class="flex gap-2 text-sm">
+            <a href="/websites/<%= form.website?._id %>/forms/<%= form._id %>/edit" class="btn-glass py-1.5 px-3">Edit</a>
+            <a href="/forms/<%= form._id %>/submissions" class="btn-glass py-1.5 px-3">Submissions</a>
+          </div>
+        </div>
+      <% }) %>
+      <% if (forms.length === 0) { %>
+        <div class="card-glass p-10 text-center">
+          <p class="text-3xl mb-2">📋</p>
+          <p class="text-muted">No forms created yet — pick a website above to add one.</p>
+        </div>
+      <% } %>
+    </div>
+
+  </main>
+  </div>
+
+  <script>
+    document.getElementById("websiteSelect").addEventListener("change", (e) => {
+      if (e.target.value) window.location.href = `/websites/${e.target.value}/forms/new`;
+    });
+  </script>
+  <script src="/js/main.js"></script>
+</body>
+</html>

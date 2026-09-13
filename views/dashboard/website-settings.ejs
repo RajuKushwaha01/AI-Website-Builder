@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title><%= website.name %> — Settings • NovaBuilder</title>
+  <%- include('../partials/head') %>
+</head>
+<body class="min-h-screen">
+  <%- include('../partials/navbar') %>
+  <%- include('../partials/sidebar', { active: 'websites' }) %>
+
+  <main class="lg:ml-64 max-w-4xl mx-auto px-6 pt-28 pb-16">
+    <div class="flex items-center justify-between mb-8">
+      <h1 class="text-3xl font-bold"><%= website.name %></h1>
+      <span id="saveStatus" class="text-sm text-muted"></span>
+    </div>
+
+    <form id="settingsForm" class="space-y-6">
+      <div class="card-glass p-6 space-y-4">
+        <h2 class="font-semibold text-lg mb-2">General</h2>
+        <div>
+          <label class="text-sm text-muted mb-1 block">Website name</label>
+          <input type="text" name="name" class="input-field" value="<%= website.name %>" />
+        </div>
+        <div>
+          <label class="text-sm text-muted mb-1 block">Description</label>
+          <textarea name="description" rows="3" class="input-field"><%= website.description %></textarea>
+        </div>
+      </div>
+
+      <div class="card-glass p-6 space-y-4">
+        <h2 class="font-semibold text-lg mb-2">SEO</h2>
+        <input type="text" name="seoTitle" class="input-field" placeholder="SEO Title" value="<%= website.seo.title %>" />
+        <textarea name="seoDescription" rows="2" class="input-field" placeholder="SEO Description"><%= website.seo.description %></textarea>
+        <input type="text" name="seoKeywords" class="input-field" placeholder="Keywords (comma separated)" value="<%= website.seo.keywords %>" />
+      </div>
+
+      <div class="card-glass p-6 space-y-4">
+        <h2 class="font-semibold text-lg mb-2">Colors</h2>
+        <div class="grid grid-cols-3 gap-3">
+          <input type="color" name="primaryColor" value="<%= website.colors.primary %>" class="w-full h-12 rounded-lg bg-transparent" />
+          <input type="color" name="secondaryColor" value="<%= website.colors.secondary %>" class="w-full h-12 rounded-lg bg-transparent" />
+          <input type="color" name="accentColor" value="<%= website.colors.accent %>" class="w-full h-12 rounded-lg bg-transparent" />
+        </div>
+      </div>
+
+      <div class="card-glass p-6 space-y-4">
+        <h2 class="font-semibold text-lg mb-2">Contact & Social</h2>
+        <input type="email" name="contactEmail" class="input-field" placeholder="Contact email" value="<%= website.contactInfo.email %>" />
+        <input type="text" name="contactPhone" class="input-field" placeholder="Phone" value="<%= website.contactInfo.phone %>" />
+        <input type="text" name="contactAddress" class="input-field" placeholder="Address" value="<%= website.contactInfo.address %>" />
+        <input type="text" name="facebook" class="input-field" placeholder="Facebook URL" value="<%= website.socialLinks.facebook %>" />
+        <input type="text" name="instagram" class="input-field" placeholder="Instagram URL" value="<%= website.socialLinks.instagram %>" />
+        <input type="text" name="twitter" class="input-field" placeholder="Twitter URL" value="<%= website.socialLinks.twitter %>" />
+        <input type="text" name="linkedin" class="input-field" placeholder="LinkedIn URL" value="<%= website.socialLinks.linkedin %>" />
+      </div>
+    </form>
+
+    <div class="card-glass p-6 mt-8">
+      <h2 class="font-semibold text-lg mb-4">Version History</h2>
+      <% if (versions.length === 0) { %>
+        <p class="text-muted text-sm">No versions saved yet. Versions are created automatically each time you save.</p>
+      <% } %>
+      <div class="space-y-3">
+        <% versions.forEach(v => { %>
+          <div class="flex items-center justify-between bg-surface/60 rounded-xl px-4 py-3">
+            <span class="text-sm">Version <%= v.versionNumber %> — <%= new Date(v.createdAt).toLocaleString() %></span>
+            <div class="flex gap-2">
+              <form action="/websites/<%= website._id %>/versions/<%= v._id %>/restore" method="POST">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                <button class="btn-glass text-xs py-1.5 px-3">Restore</button>
+              </form>
+              <form action="/websites/<%= website._id %>/versions/<%= v._id %>/delete" method="POST">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                <button class="btn-glass text-xs py-1.5 px-3 text-red-400">Delete</button>
+              </form>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <div class="card-glass p-6 mt-8">
+      <h2 class="font-semibold text-lg mb-2">Navigation Menu</h2>
+      <p class="text-muted text-sm mb-4">Control exactly which pages appear in your navbar, their order, labels, and any external links.</p>
+      <div id="navItemsList" class="space-y-2 mb-4"></div>
+      <div class="flex flex-wrap gap-2 mb-4">
+        <button id="addPageNavBtn" type="button" class="btn-glass text-sm py-2 px-4">+ Add Page Link</button>
+        <button id="addExternalNavBtn" type="button" class="btn-glass text-sm py-2 px-4">+ Add External Link</button>
+      </div>
+      <button id="saveNavBtn" type="button" class="btn-primary text-sm py-2 px-5">Save Navigation</button>
+      <p class="text-muted text-xs mt-2">Publish your website again after saving to apply changes to the live site.</p>
+    </div>
+
+    <div class="card-glass p-6 mt-8">
+      <h2 class="font-semibold text-lg mb-4">Backend Data</h2>
+      <div class="grid grid-cols-2 gap-3 mb-4">
+        <button id="loadReservationsBtn" class="btn-glass text-sm py-2">📅 View Reservations</button>
+        <button id="loadSubscribersBtn" class="btn-glass text-sm py-2">✉ View Subscribers</button>
+      </div>
+      <div id="backendDataResult" class="text-sm"></div>
+    </div>
+  </main>
+
+  <script>
+    window.WEBSITE_ID = "<%= website._id %>";
+    window.CSRF_TOKEN = "<%= csrfToken %>";
+    window.WEBSITE_PAGES = <%- JSON.stringify(website.pages.map(p => ({ id: p._id, name: p.name, slug: p.slug }))) %>;
+    window.EXISTING_NAV = <%- JSON.stringify(website.navigation || []) %>;
+  </script>
+  <script>
+    document.getElementById("loadReservationsBtn")?.addEventListener("click", async () => {
+      const res = await fetch(`/websites/${window.WEBSITE_ID}/reservations`);
+      const data = await res.json();
+      const box = document.getElementById("backendDataResult");
+      if (!data.reservations.length) { box.innerHTML = '<p class="text-muted">No reservations yet.</p>'; return; }
+      box.innerHTML = data.reservations.map(r =>
+        `<div class="border-b border-white/5 py-2">${r.name} — ${r.date} ${r.time} — party of ${r.partySize} — <span class="text-warning">${r.status}</span></div>`
+      ).join("");
+    });
+    document.getElementById("loadSubscribersBtn")?.addEventListener("click", async () => {
+      const res = await fetch(`/websites/${window.WEBSITE_ID}/subscribers`);
+      const data = await res.json();
+      const box = document.getElementById("backendDataResult");
+      if (!data.subscribers.length) { box.innerHTML = '<p class="text-muted">No subscribers yet.</p>'; return; }
+      box.innerHTML = `<p class="mb-2 text-muted">${data.count} subscriber(s)</p>` +
+        data.subscribers.map(s => `<div class="border-b border-white/5 py-1.5">${s.email}</div>`).join("");
+    });
+  </script>
+  <script src="/js/main.js"></script>
+  <script src="/js/autosave.js"></script>
+  <script src="/js/navigation-manager.js"></script>
+</body>
+</html>

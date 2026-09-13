@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Templates • Admin</title>
+  <%- include('../partials/head') %>
+</head>
+<body class="min-h-screen">
+  <%- include('../partials/navbar', { user: admin }) %>
+  <%- include('layout-sidebar', { active: 'templates' }) %>
+
+  <main class="lg:ml-64 max-w-4xl mx-auto px-6 pt-28 pb-16">
+    <h1 class="text-3xl font-bold mb-8">Templates</h1>
+
+    <div class="card-glass p-6 mb-8 space-y-3">
+      <h3 class="font-semibold mb-2">Add Template</h3>
+      <input id="tplName" type="text" class="input-field" placeholder="Template name" />
+      <input id="tplCategory" type="text" class="input-field" placeholder="Category (business, portfolio, restaurant...)" />
+      <label class="flex items-center gap-2 text-sm text-muted"><input type="checkbox" id="tplPremium" /> Premium template</label>
+      <button id="addTplBtn" class="btn-primary">Add Template</button>
+    </div>
+
+    <div class="space-y-3">
+      <% templates.forEach(t => { %>
+        <div class="card-glass p-4 flex items-center justify-between" data-id="<%= t._id %>">
+          <div>
+            <p class="font-semibold"><%= t.name %></p>
+            <p class="text-xs text-muted"><%= t.category %> <%= t.isPremium ? '• Premium' : '' %></p>
+          </div>
+          <button class="btn-glass text-xs py-1.5 px-3 text-red-400 delete-tpl-btn">Delete</button>
+        </div>
+      <% }) %>
+      <% if (templates.length === 0) { %><p class="text-muted">No templates yet.</p><% } %>
+    </div>
+  </main>
+
+  <script>window.CSRF_TOKEN = "<%= csrfToken %>";</script>
+  <script src="/js/main.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

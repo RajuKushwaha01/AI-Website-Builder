@@ -1,0 +1,31 @@
+<section class="px-6 py-16 max-w-sm mx-auto">
+  <h2 class="text-2xl font-bold text-center mb-6"><%= section.content.heading || 'Create an Account' %></h2>
+  <form class="site-signup-form space-y-4" data-slug="<%= website.slug %>">
+    <input type="text" name="name" required class="input-field" placeholder="Full name" />
+    <input type="email" name="email" required class="input-field" placeholder="Email" />
+    <input type="password" name="password" required class="input-field" placeholder="Password (min 6 characters)" />
+    <button type="submit" class="btn-primary w-full">Sign Up</button>
+    <p class="signup-status text-sm text-center hidden"></p>
+  </form>
+</section>
+
+<script>
+  document.querySelectorAll(".site-signup-form").forEach((form) => {
+    if (form.dataset.bound) return;
+    form.dataset.bound = "true";
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const status = form.querySelector(".signup-status");
+      const data = Object.fromEntries(new FormData(form).entries());
+      data.websiteSlug = form.dataset.slug;
+
+      const res = await fetch("/site-backend/signup", {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      status.textContent = result.message;
+      status.className = `signup-status text-sm text-center ${result.success ? "text-success" : "text-red-400"}`;
+      if (result.success) { form.reset(); setTimeout(() => window.location.reload(), 800); }
+    });
+  });
+</script>

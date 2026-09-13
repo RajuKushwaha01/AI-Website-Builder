@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Websites • Admin</title>
+  <%- include('../partials/head') %>
+</head>
+<body class="min-h-screen">
+  <%- include('../partials/navbar', { user: admin }) %>
+  <%- include('layout-sidebar', { active: 'websites' }) %>
+
+  <main class="lg:ml-64 max-w-5xl mx-auto px-6 pt-28 pb-16">
+    <div class="flex items-center justify-between mb-8">
+      <h1 class="text-3xl font-bold">Websites</h1>
+      <form method="GET" class="flex gap-2">
+        <input type="text" name="q" value="<%= search %>" placeholder="Search websites..." class="input-field w-64" />
+        <button class="btn-glass">Search</button>
+      </form>
+    </div>
+
+    <div class="space-y-3">
+      <% websites.forEach(w => { %>
+        <div class="card-glass p-4 flex items-center justify-between" data-id="<%= w._id %>">
+          <div>
+            <p class="font-semibold"><%= w.name %></p>
+            <p class="text-xs text-muted">Owner: <%= w.owner?.name %> (<%= w.owner?.email %>) • <span class="<%= w.status === 'published' ? 'text-success' : 'text-warning' %>"><%= w.status %></span></p>
+          </div>
+          <div class="flex gap-2 text-xs">
+            <a href="/w/<%= w.slug %>" target="_blank" class="btn-glass py-1.5 px-3">View</a>
+            <button class="btn-glass py-1.5 px-3 disable-btn">Disable</button>
+            <button class="btn-glass py-1.5 px-3 text-red-400 delete-site-btn">Delete</button>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </main>
+
+  <script>window.CSRF_TOKEN = "<%= csrfToken %>";</script>
+  <script src="/js/main.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

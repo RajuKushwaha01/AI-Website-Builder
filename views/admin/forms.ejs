@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Forms • Admin</title>
+  <%- include('../partials/head') %>
+</head>
+<body class="min-h-screen">
+  <%- include('../partials/navbar', { user: admin }) %>
+  <%- include('layout-sidebar', { active: 'forms' }) %>
+
+  <main class="lg:ml-64 max-w-5xl mx-auto px-6 pt-28 pb-16">
+    <h1 class="text-3xl font-bold mb-8">All Forms</h1>
+
+    <div class="card-glass overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-white/10 text-left text-muted">
+            <th class="p-3">Form</th><th class="p-3">Website</th><th class="p-3">Fields</th><th class="p-3">Submissions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% forms.forEach(f => { %>
+            <tr class="border-b border-white/5">
+              <td class="p-3"><%= f.name %></td>
+              <td class="p-3 text-muted"><%= f.website?.name %></td>
+              <td class="p-3"><%= f.fields.length %></td>
+              <td class="p-3"><%= f.submissionCount %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

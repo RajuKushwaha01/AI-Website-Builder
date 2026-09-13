@@ -1,0 +1,8 @@
+<section class="px-6 py-16 max-w-6xl mx-auto">
+  <h2 class="text-3xl font-bold text-center mb-10"><%= section.content.heading || 'Gallery' %></h2>
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    <% (section.content.images || [1,2,3,4]).forEach(() => { %>
+      <div class="aspect-square rounded-xl" style="background:linear-gradient(135deg, <%= theme.primary %>33, <%= theme.accent %>33)"></div>
+    <% }) %>
+  </div>
+</section>

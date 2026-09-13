@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>AI Usage • Admin</title>
+  <%- include('../partials/head') %>
+</head>
+<body class="min-h-screen">
+  <%- include('../partials/navbar', { user: admin }) %>
+  <%- include('layout-sidebar', { active: 'ai-usage' }) %>
+
+  <main class="lg:ml-64 max-w-5xl mx-auto px-6 pt-28 pb-16">
+    <h1 class="text-3xl font-bold mb-8">AI Usage</h1>
+
+  <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
+  <div class="card-glass p-4"><p class="text-muted text-xs mb-1">Total Requests</p><p class="text-xl font-bold text-secondary"><%= stats.total %></p></div>
+  <div class="card-glass p-4"><p class="text-muted text-xs mb-1">Failed</p><p class="text-xl font-bold text-red-400"><%= stats.failed %></p></div>
+  <div class="card-glass p-4"><p class="text-muted text-xs mb-1">Gemini / OpenRouter</p><p class="text-xl font-bold text-primary"><%= (stats.providerCounts.gemini || 0) %> / <%= (stats.providerCounts.openrouter || 0) %></p></div>
+  </div>
+
+    <div class="card-glass overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-white/10 text-left text-muted">
+            <th class="p-3">User</th><th class="p-3">Provider</th><th class="p-3">Status</th><th class="p-3">Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% recent.forEach(r => { %>
+            <tr class="border-b border-white/5">
+              <td class="p-3"><%= r.user?.name || 'Unknown' %></td>
+              <td class="p-3 capitalize"><%= r.provider %></td>
+              <td class="p-3"><span class="<%= r.success ? 'text-success' : 'text-red-400' %>"><%= r.success ? 'Success' : 'Failed' %></span></td>
+              <td class="p-3 text-muted"><%= new Date(r.createdAt).toLocaleString() %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Builder — <%= website.name %> • NovaBuilder</title>
+  <%- include('../partials/head') %>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+</head>
+<body class="h-screen overflow-hidden flex flex-col">
+
+  <!-- Top toolbar -->
+  <header class="flex flex-wrap items-center justify-between gap-2 px-3 sm:px-4 py-3 border-b border-white/5 bg-bg/90 shrink-0 z-30">
+    <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+      <a href="/dashboard/websites" class="text-muted hover:text-text shrink-0">←</a>
+      <span class="font-heading font-bold hidden sm:inline">✦ NovaBuilder</span>
+      <span class="text-muted text-sm truncate">/ <%= website.name %></span>
+    </div>
+
+    <div class="hidden lg:flex items-center gap-2 bg-surface/60 rounded-xl p-1">
+      <button class="device-btn active bg-aurora-gradient text-white px-3 py-1.5 rounded-lg text-sm" data-width="100%">🖥 Desktop</button>
+      <button class="device-btn text-muted px-3 py-1.5 rounded-lg text-sm" data-width="768px">▣ Tablet</button>
+      <button class="device-btn text-muted px-3 py-1.5 rounded-lg text-sm" data-width="390px">📱 Mobile</button>
+    </div>
+
+    <div class="flex items-center gap-2 flex-wrap">
+      <select id="pageSwitcher" class="input-field text-xs sm:text-sm py-1.5 sm:py-2 w-28 sm:w-auto">
+        <% website.pages.forEach(p => { %>
+          <option value="<%= p._id %>" <%= String(p._id) === String(currentPage._id) ? 'selected' : '' %>><%= p.name %></option>
+        <% }) %>
+      </select>
+      <select id="themeSelector" class="input-field text-xs sm:text-sm py-1.5 sm:py-2 hidden sm:block">
+        <option value="">Theme</option>
+        <% themePresets.forEach(t => { %><option value="<%= t %>"><%= t %></option><% }) %>
+      </select>
+      <a href="/websites/<%= website._id %>/preview-live" target="_blank" class="btn-glass text-xs sm:text-sm py-1.5 sm:py-2 px-3 sm:px-4">Preview</a>
+      <% if (website.status === 'published') { %>
+        <button id="unpublishBtn" class="btn-glass text-xs sm:text-sm py-1.5 sm:py-2 px-3 sm:px-4 text-warning">Unpublish</button>
+      <% } else { %>
+        <button id="publishBtn" class="btn-primary text-xs sm:text-sm py-1.5 sm:py-2 px-3 sm:px-4">🚀 Publish</button>
+      <% } %>
+      <span id="saveIndicator" class="text-xs text-muted w-14 text-right hidden sm:block"></span>
+    </div>
+  </header>
+
+  <!-- Mobile-only panel switcher — hidden on lg+ where all 3 panels show at once -->
+  <div class="lg:hidden flex border-b border-white/5 bg-surface/40 shrink-0">
+    <button class="panel-tab flex-1 py-2.5 text-sm text-center border-b-2 border-primary text-white" data-panel="components">🧩 Components</button>
+    <button class="panel-tab flex-1 py-2.5 text-sm text-center border-b-2 border-transparent text-muted" data-panel="canvas">🖼 Canvas</button>
+    <button class="panel-tab flex-1 py-2.5 text-sm text-center border-b-2 border-transparent text-muted" data-panel="properties">⚙ Properties</button>
+  </div>
+
+  <div class="flex flex-1 overflow-hidden relative">
+    <div id="panelComponents" class="builder-panel w-full lg:w-64 shrink-0 overflow-hidden lg:block">
+      <%- include('component-library') %>
+    </div>
+
+    <!-- Canvas -->
+    <main id="panelCanvas" class="builder-panel hidden lg:flex flex-1 overflow-y-auto bg-bg/50 justify-center py-4 sm:py-6 px-2 sm:px-0">
+      <div id="canvasFrame" class="bg-white/[0.02] border border-white/5 rounded-2xl transition-all w-full" style="max-width:1100px;">
+        <div id="canvas" data-page-id="<%= currentPage._id %>" class="min-h-[400px] sm:min-h-[600px]">
+          <% (currentPage.sections || []).forEach(section => { %>
+            <div class="builder-section relative group border border-transparent hover:border-primary/50 <%= section.hidden ? 'opacity-40' : '' %>"
+                 data-section-id="<%= section._id %>" data-type="<%= section.type %>">
+              <div class="absolute top-1 right-1 hidden group-hover:flex gap-1 bg-bg/90 rounded-md px-1.5 py-1 z-10 text-xs">
+                <span class="cursor-grab drag-handle px-1">⠿</span>
+                <span class="px-1 text-muted"><%= section.type %></span>
+              </div>
+              <% try { %>
+                <%- include('../components/' + section.type, { section, theme: website.colors, website }) %>
+              <% } catch (e) { %>
+                <div class="p-6 text-center text-muted text-sm border border-dashed border-white/10 rounded-xl m-2"><%= section.type %> component</div>
+              <% } %>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    </main>
+
+    <div id="panelProperties" class="builder-panel hidden lg:block w-full lg:w-72 shrink-0 overflow-hidden">
+      <%- include('properties-panel') %>
+    </div>
+  </div>
+
+  <script>
+    window.WEBSITE_ID = "<%= website._id %>";
+    window.CSRF_TOKEN = "<%= csrfToken %>";
+    window.COMPONENT_DEFAULTS = <%- JSON.stringify(Object.fromEntries([...componentLibrary.basic, ...componentLibrary.website].map(c => [c.type, c.defaultContent]))) %>;
+  </script>
+  <script src="/js/main.js"></script>
+  <script src="/js/builder.js"></script>
+  <script src="/js/builder-responsive.js"></script>
+</body>
+</html>

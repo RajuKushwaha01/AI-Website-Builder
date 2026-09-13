@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="<%= website.language || 'en' %>">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= page.seo?.title || website.seo?.title || website.name %></title>
+  <meta name="description" content="<%= page.seo?.description || website.seo?.description || '' %>" />
+  <meta name="keywords" content="<%= page.seo?.keywords || website.seo?.keywords || '' %>" />
+  <% if (page.seo?.canonicalUrl) { %><link rel="canonical" href="<%= page.seo.canonicalUrl %>" /><% } %>
+  <meta property="og:title" content="<%= page.seo?.ogTitle || website.name %>" />
+  <meta property="og:description" content="<%= page.seo?.ogDescription || website.seo?.ogDescription || '' %>" />
+  <% if (page.seo?.ogImage) { %><meta property="og:image" content="<%= page.seo.ogImage %>" /><% } %>
+  <% if (website.favicon) { %><link rel="icon" href="<%= website.favicon %>" /><% } %>
+
+  <link rel="stylesheet" href="/css/output.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+
+  <% if (isPreview) { %>
+    <meta name="robots" content="noindex" />
+  <% } %>
+</head>
+<body class="bg-bg text-text font-sans">
+
+  <% if (isPreview) { %>
+    <div class="fixed top-0 left-0 w-full bg-warning text-black text-center text-xs py-1.5 z-50 font-semibold">
+      PREVIEW MODE — this shows your unpublished draft
+    </div>
+    <div class="h-6"></div>
+  <% } %>
+
+  <% const theme = website.colors; %>
+  <% (page.sections || []).filter(s => !s.hidden).forEach(section => { %>
+    <% try { %>
+      <%- include('../components/' + section.type, { section, theme, website, navLinks, baseUrl, currentPage: page }) %>
+    <% } catch (e) { %>
+      <!-- section skipped -->
+    <% } %>
+  <% }) %>
+
+  <% if (!isPreview) { %>
+    <script src="/js/analytics-client.js" defer></script>
+  <% } %>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Profile • NovaBuilder</title>
+  <%- include('../partials/head') %>
+</head>
+<body class="min-h-screen">
+  <%- include('../partials/navbar') %>
+  <%- include('../partials/sidebar', { active: 'profile' }) %>
+
+  <div class="lg:pl-64 flex justify-center">
+  <main class="w-full max-w-2xl px-4 sm:px-6 pt-24 sm:pt-28 pb-16">
+
+    <h1 class="text-2xl sm:text-3xl font-bold mb-6">Account Settings</h1>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="bg-red-500/10 border border-red-500/30 text-red-300 text-sm rounded-lg px-4 py-3 mb-4"><%= error %></div>
+    <% } %>
+    <% if (typeof success !== 'undefined' && success) { %>
+      <div class="bg-success/10 border border-success/30 text-success text-sm rounded-lg px-4 py-3 mb-4"><%= success %></div>
+    <% } %>
+
+    <div class="flex gap-2 mb-6 border-b border-white/10">
+      <button class="profile-tab px-4 py-2 text-sm border-b-2 border-primary text-white" data-tab="profile">Profile</button>
+      <button class="profile-tab px-4 py-2 text-sm border-b-2 border-transparent text-muted" data-tab="security">Security</button>
+    </div>
+
+    <div id="tabProfile" class="card-glass p-6">
+      <form action="/profile" method="POST" enctype="multipart/form-data" class="space-y-4">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <div class="flex items-center gap-4">
+          <div class="w-16 h-16 rounded-full flex items-center justify-center font-bold text-xl" style="background:<%= user.avatarColor %>">
+            <%= user.name.charAt(0).toUpperCase() %>
+          </div>
+          <input type="file" name="profileImage" accept="image/*" class="text-sm text-muted" />
+        </div>
+        <div><label class="text-sm text-muted mb-1 block">Full name</label><input type="text" name="name" class="input-field" value="<%= user.name %>" /></div>
+        <div><label class="text-sm text-muted mb-1 block">Username</label><input type="text" name="username" class="input-field" value="<%= user.username %>" /></div>
+        <div><label class="text-sm text-muted mb-1 block">Email</label><input type="email" class="input-field opacity-60" value="<%= user.email %>" disabled /></div>
+        <button type="submit" class="btn-primary">Save Changes</button>
+      </form>
+    </div>
+
+    <div id="tabSecurity" class="card-glass p-6 hidden">
+      <form action="/profile/change-password" method="POST" class="space-y-4">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <input type="password" name="currentPassword" required class="input-field" placeholder="Current password" />
+        <input type="password" name="newPassword" required class="input-field" placeholder="New password" />
+        <input type="password" name="confirmNewPassword" required class="input-field" placeholder="Confirm new password" />
+        <button type="submit" class="btn-primary">Update Password</button>
+      </form>
+    </div>
+
+  </main>
+  </div>
+
+  <script>
+    document.querySelectorAll(".profile-tab").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".profile-tab").forEach(t => t.classList.remove("border-primary", "text-white"));
+        document.querySelectorAll(".profile-tab").forEach(t => t.classList.add("border-transparent", "text-muted"));
+        tab.classList.remove("border-transparent", "text-muted");
+        tab.classList.add("border-primary", "text-white");
+        document.getElementById("tabProfile").classList.toggle("hidden", tab.dataset.tab !== "profile");
+        document.getElementById("tabSecurity").classList.toggle("hidden", tab.dataset.tab !== "security");
+      });
+    });
+  </script>
+  <script src="/js/main.js"></script>
+</body>
+</html>

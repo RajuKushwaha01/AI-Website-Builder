@@ -1,0 +1,61 @@
+<section class="px-6 py-16 max-w-lg mx-auto">
+  <h2 class="text-3xl font-bold text-center mb-8"><%= section.content.heading || 'Contact Us' %></h2>
+
+  <form class="live-form space-y-4" data-form-id="<%= section.content.formId %>">
+    <% (section.content.fields || [
+      { label: 'Name', fieldType: 'text', required: true },
+      { label: 'Email', fieldType: 'email', required: true },
+      { label: 'Phone', fieldType: 'phone', required: false },
+      { label: 'Message', fieldType: 'textarea', required: true }
+    ]).forEach(field => { %>
+      <div>
+        <label class="text-sm text-muted mb-1 block"><%= field.label %><%= field.required ? ' *' : '' %></label>
+
+        <% if (field.fieldType === 'textarea') { %>
+          <textarea name="<%= field.label %>" rows="4" <%= field.required ? 'required' : '' %> class="input-field"></textarea>
+        <% } else if (field.fieldType === 'dropdown') { %>
+          <select name="<%= field.label %>" <%= field.required ? 'required' : '' %> class="input-field">
+            <% (field.options || []).forEach(opt => { %><option><%= opt %></option><% }) %>
+          </select>
+        <% } else if (field.fieldType === 'checkbox') { %>
+          <input type="checkbox" name="<%= field.label %>" class="accent-primary" />
+        <% } else if (field.fieldType === 'radio') { %>
+          <% (field.options || []).forEach(opt => { %>
+            <label class="flex items-center gap-2 text-sm text-muted"><input type="radio" name="<%= field.label %>" value="<%= opt %>" /> <%= opt %></label>
+          <% }) %>
+        <% } else { %>
+          <input type="<%= field.fieldType === 'phone' ? 'tel' : field.fieldType %>" name="<%= field.label %>" <%= field.required ? 'required' : '' %> class="input-field" />
+        <% } %>
+      </div>
+    <% }) %>
+
+    <button type="submit" class="btn-primary w-full">Submit</button>
+    <p class="form-status text-sm text-center hidden"></p>
+  </form>
+</section>
+
+<script>
+  document.querySelectorAll(".live-form").forEach((form) => {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formId = form.dataset.formId;
+      const status = form.querySelector(".form-status");
+      const data = Object.fromEntries(new FormData(form).entries());
+
+      try {
+        const res = await fetch(`/public/forms/${formId}/submit`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        status.textContent = result.message;
+        status.className = `form-status text-sm text-center ${result.success ? "text-success" : "text-red-400"}`;
+        if (result.success) form.reset();
+      } catch (err) {
+        status.textContent = "Something went wrong. Please try again.";
+        status.className = "form-status text-sm text-center text-red-400";
+      }
+    });
+  });
+</script>

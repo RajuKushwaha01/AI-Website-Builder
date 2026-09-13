@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>AI Builder • NovaBuilder</title>
+  <%- include('../partials/head') %>
+</head>
+<body class="min-h-screen">
+  <%- include('../partials/navbar') %>
+  <%- include('../partials/sidebar', { active: 'ai-builder' }) %>
+
+  <div class="lg:pl-64 flex justify-center">
+  <main class="w-full max-w-4xl px-4 sm:px-6 pt-24 sm:pt-28 pb-16">
+
+    <h1 class="text-2xl sm:text-3xl font-bold mb-1">✨ AI Website Builder</h1>
+    <p class="text-muted mb-8 text-sm sm:text-base">Describe your business — our AI generates a full website structure for you.</p>
+
+    <div id="alertBox" class="hidden mb-4 text-sm rounded-lg px-4 py-3"></div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <form id="aiForm" class="card-glass p-5 sm:p-6 space-y-5 lg:col-span-2">
+        <div>
+          <label class="text-sm text-muted mb-1 block">Website type</label>
+          <select name="websiteType" required class="input-field">
+            <% websiteTypes.forEach(group => { %>
+              <optgroup label="<%= group.group %>">
+                <% group.items.forEach(item => { %><option value="<%= item %>"><%= item %></option><% }) %>
+              </optgroup>
+            <% }) %>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-sm text-muted mb-1 block">Business name</label>
+          <input type="text" name="businessName" required class="input-field" placeholder="Himalayan Kitchen" />
+        </div>
+
+        <div>
+          <label class="text-sm text-muted mb-1 block">Description</label>
+          <textarea name="description" required rows="3" class="input-field" placeholder="A Nepalese restaurant serving traditional food."></textarea>
+          <div id="backendPreview" class="hidden text-xs bg-secondary/10 border border-secondary/30 rounded-lg px-3 py-2 text-secondary mt-2"></div>
+        </div>
+
+        <div>
+          <label class="text-sm text-muted mb-1 block">Pages (comma separated)</label>
+          <input type="text" name="pages" class="input-field" value="Home, About, Services, Contact" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="text-sm text-muted mb-1 block">Style</label>
+            <select name="style" class="input-field">
+              <option>Modern</option><option>Minimal</option><option>Bold</option><option>Elegant</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-sm text-muted mb-1 block">Color preference</label>
+            <input type="text" name="colorHint" class="input-field" placeholder="Red + Cream" />
+          </div>
+        </div>
+
+        <button type="submit" id="generateBtn" class="btn-primary w-full">✨ Generate Website</button>
+      </form>
+
+      <div class="space-y-4">
+        <div class="card-glass p-5">
+          <p class="font-semibold text-sm mb-3">💡 Tips for better results</p>
+          <ul class="text-xs text-muted space-y-2 list-disc list-inside">
+            <li>Mention your industry clearly (e.g. "Nepalese restaurant" not just "food place")</li>
+            <li>List only the pages you actually need — fewer pages generate faster</li>
+            <li>Color hints work best as two colors (e.g. "Navy + Gold")</li>
+          </ul>
+        </div>
+        <div class="card-glass p-5">
+          <p class="font-semibold text-sm mb-3">⚡ What happens next</p>
+          <ol class="text-xs text-muted space-y-2 list-decimal list-inside">
+            <li>AI writes your pages, sections & copy</li>
+            <li>You land directly in the Visual Builder</li>
+            <li>Drag, edit, and restyle anything</li>
+            <li>Publish to get your live public link</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div id="progressBox" class="card-glass p-6 mt-6 hidden">
+      <p class="font-semibold mb-3">Generating your website...</p>
+      <ul class="space-y-2 text-sm text-muted">
+        <li id="step1">○ Understanding your idea</li>
+        <li id="step2">○ Planning pages</li>
+        <li id="step3">○ Creating content</li>
+        <li id="step4">○ Finalizing website</li>
+      </ul>
+    </div>
+
+  </main>
+  </div>
+
+  <script>window.CSRF_TOKEN = "<%= csrfToken %>";</script>
+  <script src="/js/main.js"></script>
+  <script src="/js/ai-builder.js"></script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Media • NovaBuilder</title>
+  <%- include('../partials/head') %>
+</head>
+<body class="min-h-screen">
+  <%- include('../partials/navbar') %>
+  <%- include('../partials/sidebar', { active: 'media' }) %>
+
+  <div class="lg:pl-64 flex justify-center">
+  <main class="w-full max-w-5xl px-4 sm:px-6 pt-24 sm:pt-28 pb-16">
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+      <h1 class="text-2xl sm:text-3xl font-bold">Media Library</h1>
+      <label class="btn-primary text-sm py-2.5 px-5 cursor-pointer text-center">
+        Upload Image
+        <input type="file" id="fileInput" accept="image/*" class="hidden" />
+      </label>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-3 mb-6">
+      <input id="mediaSearch" type="text" class="input-field flex-1" placeholder="Search by filename..." />
+    </div>
+
+    <div id="mediaGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+      <% media.forEach(item => { %>
+        <div class="card-glass overflow-hidden" data-id="<%= item._id %>">
+          <img src="<%= item.url %>" alt="<%= item.altText %>" class="w-full h-32 object-cover" />
+          <div class="p-3">
+            <p class="text-xs truncate mb-2"><%= item.filename %></p>
+            <input type="text" class="input-field text-xs mb-2 alt-input" placeholder="Alt text" value="<%= item.altText %>" />
+            <div class="flex gap-2 text-xs">
+              <button class="save-alt-btn btn-glass py-1 px-2 flex-1">Save Alt</button>
+              <button class="delete-media-btn btn-glass py-1 px-2 text-red-400">Delete</button>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+    <% if (media.length === 0) { %>
+      <div class="card-glass p-10 text-center">
+        <p class="text-3xl mb-2">🖼</p>
+        <p class="text-muted">No media uploaded yet.</p>
+      </div>
+    <% } %>
+
+  </main>
+  </div>
+
+  <script>window.CSRF_TOKEN = "<%= csrfToken %>";</script>
+  <script src="/js/main.js"></script>
+  <script src="/js/media.js"></script>
+  <script>
+    document.getElementById("mediaSearch")?.addEventListener("input", (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      document.querySelectorAll("#mediaGrid > div").forEach((card) => {
+        const filename = card.querySelector("p")?.textContent.toLowerCase() || "";
+        card.classList.toggle("hidden", q && !filename.includes(q));
+      });
+    });
+  </script>
+</body>
+</html>

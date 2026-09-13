@@ -1,0 +1,19 @@
+<nav class="fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-bg/70 border-b border-white/5">
+  <div class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+    <a href="/" class="flex items-center gap-2 font-heading text-xl font-bold">
+      <span class="bg-aurora-gradient bg-clip-text text-transparent">✦ NovaBuilder</span>
+    </a>
+    <div class="flex items-center gap-3">
+      <% if (typeof user !== 'undefined' && user) { %>
+        <span class="text-muted text-sm hidden sm:block">Hi, <%= user.name %></span>
+        <% if (user.role === 'admin') { %>
+          <a href="/admin" class="btn-glass text-sm py-2 px-4">🛡 Admin</a>
+        <% } %>
+        <a href="/logout" class="btn-glass text-sm py-2 px-4">Logout</a>
+      <% } else { %>
+        <a href="/login" class="btn-glass text-sm py-2 px-4">Login</a>
+        <a href="/register" class="btn-primary text-sm py-2 px-4">Get Started</a>
+      <% } %>
+    </div>
+  </div>
+</nav>

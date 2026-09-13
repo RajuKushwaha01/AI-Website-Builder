@@ -1,0 +1,8 @@
+<section class="px-6 py-16 max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+  <% (section.content.items || []).forEach(stat => { %>
+    <div>
+      <p class="text-3xl font-bold" style="color:<%= theme.accent %>"><%= stat.value %></p>
+      <p class="text-muted text-sm"><%= stat.label %></p>
+    </div>
+  <% }) %>
+</section>

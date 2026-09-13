@@ -1,0 +1,14 @@
+<aside class="fixed left-0 top-0 h-full w-64 bg-surface/60 backdrop-blur-md border-r border-white/5 pt-24 px-4 hidden lg:block">
+  <p class="text-xs text-muted uppercase font-semibold mb-3 px-2">Admin Panel</p>
+  <nav class="space-y-1">
+    <a href="/admin" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm <%= active === 'dashboard' ? 'bg-aurora-gradient text-white' : 'text-muted hover:bg-white/5' %>">⌂ Dashboard</a>
+    <a href="/admin/users" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm <%= active === 'users' ? 'bg-aurora-gradient text-white' : 'text-muted hover:bg-white/5' %>">◈ Users</a>
+    <a href="/admin/websites" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm <%= active === 'websites' ? 'bg-aurora-gradient text-white' : 'text-muted hover:bg-white/5' %>">▦ Websites</a>
+    <a href="/admin/templates" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm <%= active === 'templates' ? 'bg-aurora-gradient text-white' : 'text-muted hover:bg-white/5' %>">▣ Templates</a>
+    <a href="/admin/ai-usage" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm <%= active === 'ai-usage' ? 'bg-aurora-gradient text-white' : 'text-muted hover:bg-white/5' %>">✦ AI Usage</a>
+    <a href="/admin/forms" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm <%= active === 'forms' ? 'bg-aurora-gradient text-white' : 'text-muted hover:bg-white/5' %>">☷ Forms</a>
+    <a href="/admin/reports" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm <%= active === 'reports' ? 'bg-aurora-gradient text-white' : 'text-muted hover:bg-white/5' %>">◔ Reports</a>
+    <a href="/admin/security" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm <%= active === 'security' ? 'bg-aurora-gradient text-white' : 'text-muted hover:bg-white/5' %>">🛡 Security</a>
+    <a href="/dashboard" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-muted hover:bg-white/5 mt-4 border-t border-white/10 pt-4">← Back to App</a>
+  </nav>
+</aside>

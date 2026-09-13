@@ -1,0 +1,11 @@
+<section class="px-6 py-16 max-w-3xl mx-auto">
+  <h2 class="text-3xl font-bold text-center mb-10"><%= section.content.heading || 'FAQ' %></h2>
+  <div class="space-y-3">
+    <% (section.content.items || []).forEach(item => { %>
+      <div class="card-glass p-5">
+        <p class="font-semibold mb-1"><%= item.question %></p>
+        <p class="text-muted text-sm"><%= item.answer %></p>
+      </div>
+    <% }) %>
+  </div>
+</section>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Users • Admin</title>
+  <%- include('../partials/head') %>
+</head>
+<body class="min-h-screen">
+  <%- include('../partials/navbar', { user: admin }) %>
+  <%- include('layout-sidebar', { active: 'users' }) %>
+
+  <main class="lg:ml-64 max-w-5xl mx-auto px-6 pt-28 pb-16">
+    <div class="flex items-center justify-between mb-8">
+      <h1 class="text-3xl font-bold">Users</h1>
+      <form method="GET" class="flex gap-2">
+        <input type="text" name="q" value="<%= search %>" placeholder="Search name/email..." class="input-field w-64" />
+        <button class="btn-glass">Search</button>
+      </form>
+    </div>
+
+    <div class="card-glass overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-white/10 text-left text-muted">
+            <th class="p-3">Name</th><th class="p-3">Email</th><th class="p-3">Role</th><th class="p-3">Status</th><th class="p-3">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% users.forEach(u => { %>
+            <tr class="border-b border-white/5" data-id="<%= u._id %>">
+              <td class="p-3"><%= u.name %></td>
+              <td class="p-3 text-muted"><%= u.email %></td>
+              <td class="p-3">
+                <select class="input-field text-xs py-1 role-select">
+                  <option value="user" <%= u.role === 'user' ? 'selected' : '' %>>user</option>
+                  <option value="admin" <%= u.role === 'admin' ? 'selected' : '' %>>admin</option>
+                </select>
+              </td>
+              <td class="p-3"><span class="<%= u.status === 'active' ? 'text-success' : 'text-red-400' %>">● <%= u.status %></span></td>
+              <td class="p-3 flex gap-2">
+                <% if (u.status === 'active') { %>
+                  <button class="btn-glass text-xs py-1 px-2 block-btn">Block</button>
+                <% } else { %>
+                  <button class="btn-glass text-xs py-1 px-2 unblock-btn text-success">Unblock</button>
+                <% } %>
+                <button class="btn-glass text-xs py-1 px-2 text-red-400 delete-btn">Delete</button>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>window.CSRF_TOKEN = "<%= csrfToken %>";</script>
+  <script src="/js/main.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

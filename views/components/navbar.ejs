@@ -1,0 +1,46 @@
+<nav class="relative flex items-center justify-between px-6 py-4 border-b border-white/5">
+  <a href="<%= typeof baseUrl !== 'undefined' ? baseUrl : '#' %>" class="font-heading font-bold text-lg" style="color:<%= theme.primary %>">
+    <%= section.content.logoText || website.name %>
+  </a>
+
+  <div class="hidden sm:flex gap-6 text-sm">
+    <% if (typeof navLinks !== 'undefined' && navLinks && navLinks.length) { %>
+      <% navLinks.forEach(link => { %>
+        <a href="<%= link.href %>" <%= link.external ? 'target="_blank" rel="noopener"' : '' %>
+           class="<%= link.active ? 'text-white font-semibold' : 'text-muted hover:text-text' %> transition-colors">
+          <%= link.label %>
+        </a>
+      <% }) %>
+    <% } else { %>
+      <!-- Builder canvas / editable placeholder — not clickable by design -->
+      <% (section.content.links || []).forEach(link => { %>
+        <span class="text-muted cursor-default"><%= link %></span>
+      <% }) %>
+    <% } %>
+  </div>
+
+  <% if (typeof navLinks !== 'undefined' && navLinks && navLinks.length) { %>
+    <button type="button" class="nav-mobile-toggle sm:hidden text-muted text-xl" aria-label="Menu">☰</button>
+    <div class="nav-mobile-menu hidden absolute top-full right-4 mt-2 bg-surface border border-white/10 rounded-xl p-3 flex-col gap-1 sm:hidden z-20 min-w-[160px]">
+      <% navLinks.forEach(link => { %>
+        <a href="<%= link.href %>" <%= link.external ? 'target="_blank" rel="noopener"' : '' %>
+           class="block px-3 py-2 text-sm rounded-lg <%= link.active ? 'text-white bg-white/5 font-semibold' : 'text-muted hover:bg-white/5' %>">
+          <%= link.label %>
+        </a>
+      <% }) %>
+    </div>
+  <% } %>
+</nav>
+
+<script>
+  document.querySelectorAll(".nav-mobile-toggle").forEach((btn) => {
+    if (btn.dataset.bound) return;
+    btn.dataset.bound = "true";
+    btn.addEventListener("click", () => {
+      const menu = btn.parentElement.querySelector(".nav-mobile-menu");
+      if (!menu) return;
+      menu.classList.toggle("hidden");
+      menu.classList.toggle("flex");
+    });
+  });
+</script>

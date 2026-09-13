@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Form Builder • NovaBuilder</title>
+  <%- include('../partials/head') %>
+</head>
+<body class="min-h-screen">
+  <%- include('../partials/navbar') %>
+  <%- include('../partials/sidebar', { active: 'forms' }) %>
+
+  <main class="lg:ml-64 max-w-3xl mx-auto px-6 pt-28 pb-16">
+    <h1 class="text-3xl font-bold mb-8"><%= form ? 'Edit Form' : 'New Form' %> — <%= website.name %></h1>
+
+    <div class="card-glass p-6 space-y-4 mb-6">
+      <input id="formName" type="text" class="input-field" placeholder="Form name" value="<%= form?.name || 'Contact Form' %>" />
+      <input id="notifyEmail" type="email" class="input-field" placeholder="Notify this email on new submissions" value="<%= form?.notifyEmail || '' %>" />
+    </div>
+
+    <div id="fieldsList" class="space-y-3 mb-4"></div>
+
+    <button id="addFieldBtn" class="btn-glass w-full mb-6">+ Add Field</button>
+    <button id="saveFormBtn" class="btn-primary w-full">Save Form</button>
+  </main>
+
+  <script>
+    window.WEBSITE_ID = "<%= website._id %>";
+    window.FORM_ID = "<%= form?._id || '' %>";
+    window.CSRF_TOKEN = "<%= csrfToken %>";
+    window.EXISTING_FIELDS = <%- JSON.stringify(form?.fields || [
+      { label: "Name", fieldType: "text", required: true },
+      { label: "Email", fieldType: "email", required: true },
+      { label: "Message", fieldType: "textarea", required: true }
+    ]) %>;
+  </script>
+  <script src="/js/main.js"></script>
+  <script src="/js/form-builder.js"></script>
+</body>
+</html>

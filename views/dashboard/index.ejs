@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Dashboard • NovaBuilder</title>
+  <%- include('../partials/head') %>
+</head>
+<body class="min-h-screen">
+  <%- include('../partials/navbar') %>
+  <%- include('../partials/sidebar', { active: 'dashboard' }) %>
+
+  <div class="lg:pl-64 flex justify-center">
+  <main class="w-full max-w-5xl px-4 sm:px-6 pt-24 sm:pt-28 pb-16">
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-8">
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-bold mb-1">Welcome back, <%= user.name %> 👋</h1>
+        <p class="text-muted text-sm">Here's what's happening with your websites.</p>
+      </div>
+      <a href="/create-website" class="btn-primary text-sm py-2.5 px-5 text-center">✨ New Website</a>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-5 mb-8">
+      <div class="card-glass p-4 sm:p-5">
+        <p class="text-muted text-xs sm:text-sm mb-1">Websites</p>
+        <p class="text-xl sm:text-2xl font-bold text-secondary"><%= stats.total %></p>
+      </div>
+      <div class="card-glass p-4 sm:p-5">
+        <p class="text-muted text-xs sm:text-sm mb-1">Published</p>
+        <p class="text-xl sm:text-2xl font-bold text-success"><%= stats.published %></p>
+      </div>
+      <div class="card-glass p-4 sm:p-5">
+        <p class="text-muted text-xs sm:text-sm mb-1">Drafts</p>
+        <p class="text-xl sm:text-2xl font-bold text-warning"><%= stats.drafts %></p>
+      </div>
+      <div class="card-glass p-4 sm:p-5">
+        <p class="text-muted text-xs sm:text-sm mb-1">AI Generations</p>
+        <p class="text-xl sm:text-2xl font-bold text-accent"><%= stats.aiGenerations %></p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-10">
+      <a href="/ai-builder" class="card-glass p-4 text-center hover:border-primary/40 border border-transparent transition-colors">
+        <p class="text-2xl mb-1">✨</p><p class="text-sm">AI Builder</p>
+      </a>
+      <a href="/dashboard/media" class="card-glass p-4 text-center hover:border-primary/40 border border-transparent transition-colors">
+        <p class="text-2xl mb-1">🖼</p><p class="text-sm">Media</p>
+      </a>
+      <a href="/dashboard/forms" class="card-glass p-4 text-center hover:border-primary/40 border border-transparent transition-colors">
+        <p class="text-2xl mb-1">📋</p><p class="text-sm">Forms</p>
+      </a>
+      <a href="/dashboard/analytics" class="card-glass p-4 text-center hover:border-primary/40 border border-transparent transition-colors">
+        <p class="text-2xl mb-1">📊</p><p class="text-sm">Analytics</p>
+      </a>
+    </div>
+
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg sm:text-xl font-semibold">Recent Websites</h2>
+      <a href="/dashboard/websites" class="text-secondary text-sm hover:underline">View all →</a>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+      <% if (websites.length === 0) { %>
+        <div class="col-span-full card-glass p-8 text-center">
+          <p class="text-3xl mb-2">🌱</p>
+          <p class="text-muted mb-4">No websites yet — create your first one.</p>
+          <a href="/create-website" class="btn-primary text-sm py-2 px-5 inline-block">✨ Create Website</a>
+        </div>
+      <% } %>
+      <% websites.forEach(site => { %>
+        <div class="card-glass overflow-hidden hover:-translate-y-1 transition-transform duration-200">
+          <div class="h-28 sm:h-32 bg-gradient-to-br from-primary/30 via-secondary/20 to-accent/30"></div>
+          <div class="p-4">
+            <p class="font-semibold truncate"><%= site.name %></p>
+            <p class="text-xs mt-1 <%= site.status === 'published' ? 'text-success' : 'text-warning' %>">
+              ● <%= site.status.charAt(0).toUpperCase() + site.status.slice(1) %>
+            </p>
+            <div class="flex gap-3 mt-3 text-sm text-muted">
+              <a href="/builder/<%= site._id %>" class="hover:text-text">Edit</a>
+              <a href="/websites/<%= site._id %>/settings" class="hover:text-text">Settings</a>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+
+  </main>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>My Websites • NovaBuilder</title>
+  <%- include('../partials/head') %>
+</head>
+<body class="min-h-screen">
+  <%- include('../partials/navbar') %>
+  <%- include('../partials/sidebar', { active: 'websites' }) %>
+
+  <div class="lg:pl-64 flex justify-center">
+  <main class="w-full max-w-5xl px-4 sm:px-6 pt-24 sm:pt-28 pb-16">
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+      <h1 class="text-2xl sm:text-3xl font-bold">My Websites</h1>
+      <a href="/create-website" class="btn-primary text-sm py-2.5 px-5 text-center">✨ New Website</a>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-3 mb-6">
+      <input id="searchInput" type="text" class="input-field flex-1" placeholder="Search websites by name..." />
+      <select id="statusFilter" class="input-field sm:w-44">
+        <option value="">All statuses</option>
+        <option value="published">Published</option>
+        <option value="draft">Draft</option>
+        <option value="archived">Archived</option>
+      </select>
+      <select id="sortSelect" class="input-field sm:w-44">
+        <option value="updated">Recently updated</option>
+        <option value="name">Name A–Z</option>
+        <option value="oldest">Oldest first</option>
+      </select>
+    </div>
+
+    <div id="websiteList" class="space-y-4">
+      <% websites.forEach(site => { %>
+        <div class="card-glass p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 website-row"
+             data-name="<%= site.name.toLowerCase() %>" data-status="<%= site.status %>" data-updated="<%= new Date(site.updatedAt).getTime() %>">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/40 to-accent/40 shrink-0"></div>
+            <div class="min-w-0">
+              <p class="font-semibold truncate"><%= site.name %></p>
+              <p class="text-xs mt-1 <%= site.status === 'published' ? 'text-success' : site.status === 'archived' ? 'text-muted' : 'text-warning' %>">
+                ● <%= site.status.charAt(0).toUpperCase() + site.status.slice(1) %> · updated <%= new Date(site.updatedAt).toLocaleDateString() %>
+              </p>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <a href="/builder/<%= site._id %>" class="btn-glass text-xs py-2 px-3">Edit</a>
+            <a href="/websites/<%= site._id %>/settings" class="btn-glass text-xs py-2 px-3">Settings</a>
+            <a href="/websites/<%= site._id %>/blog" class="btn-glass text-xs py-2 px-3">Blog</a>
+            <% if (site.status === 'published') { %>
+              <form action="/websites/<%= site._id %>/unpublish" method="POST"><input type="hidden" name="_csrf" value="<%= csrfToken %>" /><button class="btn-glass text-xs py-2 px-3">Unpublish</button></form>
+            <% } else { %>
+              <form action="/websites/<%= site._id %>/publish" method="POST"><input type="hidden" name="_csrf" value="<%= csrfToken %>" /><button class="btn-glass text-xs py-2 px-3 text-success">Publish</button></form>
+            <% } %>
+            <form action="/websites/<%= site._id %>/duplicate" method="POST"><input type="hidden" name="_csrf" value="<%= csrfToken %>" /><button class="btn-glass text-xs py-2 px-3">Duplicate</button></form>
+            <form action="/websites/<%= site._id %>/archive" method="POST"><input type="hidden" name="_csrf" value="<%= csrfToken %>" /><button class="btn-glass text-xs py-2 px-3">Archive</button></form>
+            <form action="/websites/<%= site._id %>/delete" method="POST" onsubmit="return confirm('Delete this website permanently?');"><input type="hidden" name="_csrf" value="<%= csrfToken %>" /><button class="btn-glass text-xs py-2 px-3 text-red-400">Delete</button></form>
+          </div>
+        </div>
+      <% }) %>
+      <% if (websites.length === 0) { %>
+        <div class="card-glass p-10 text-center">
+          <p class="text-3xl mb-2">🌱</p>
+          <p class="text-muted">No websites yet.</p>
+        </div>
+      <% } %>
+    </div>
+    <p id="noResults" class="hidden text-muted text-center py-10">No websites match your search/filter.</p>
+
+  </main>
+  </div>
+
+  <script>
+    const rows = () => Array.from(document.querySelectorAll(".website-row"));
+    const searchInput = document.getElementById("searchInput");
+    const statusFilter = document.getElementById("statusFilter");
+    const sortSelect = document.getElementById("sortSelect");
+    const list = document.getElementById("websiteList");
+    const noResults = document.getElementById("noResults");
+
+    function applyFilters() {
+      const query = searchInput.value.trim().toLowerCase();
+      const status = statusFilter.value;
+      let visibleCount = 0;
+      let visible = rows().filter((row) => {
+        const matchesQuery = !query || row.dataset.name.includes(query);
+        const matchesStatus = !status || row.dataset.status === status;
+        const show = matchesQuery && matchesStatus;
+        row.classList.toggle("hidden", !show);
+        if (show) visibleCount++;
+        return show;
+      });
+      const sortBy = sortSelect.value;
+      visible.sort((a, b) => {
+        if (sortBy === "name") return a.dataset.name.localeCompare(b.dataset.name);
+        if (sortBy === "oldest") return a.dataset.updated - b.dataset.updated;
+        return b.dataset.updated - a.dataset.updated;
+      });
+      visible.forEach((row) => list.appendChild(row));
+      noResults.classList.toggle("hidden", visibleCount > 0);
+    }
+    searchInput.addEventListener("input", applyFilters);
+    statusFilter.addEventListener("change", applyFilters);
+    sortSelect.addEventListener("change", applyFilters);
+  </script>
+  <script src="/js/main.js"></script>
+</body>
+</html>

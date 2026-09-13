@@ -1,0 +1,23 @@
+<aside class="w-full lg:w-64 h-full bg-surface/60 border-r border-white/5 overflow-y-auto p-4 shrink-0">
+<h3 class="text-xs font-semibold text-muted uppercase mb-3">Basic</h3>
+  <div class="space-y-1.5 mb-6">
+    <% componentLibrary.basic.forEach(c => { %>
+      <div class="component-item flex items-center gap-2 px-3 py-2 rounded-lg bg-card/60 border border-white/5 cursor-grab text-sm hover:border-primary/50"
+           data-type="<%= c.type %>">
+        <i data-lucide="<%= c.icon %>" class="w-4 h-4 text-secondary"></i>
+        <%= c.label %>
+      </div>
+    <% }) %>
+  </div>
+
+  <h3 class="text-xs font-semibold text-muted uppercase mb-3">Website</h3>
+  <div class="space-y-1.5">
+    <% componentLibrary.website.forEach(c => { %>
+      <div class="component-item flex items-center gap-2 px-3 py-2 rounded-lg bg-card/60 border border-white/5 cursor-grab text-sm hover:border-primary/50"
+           data-type="<%= c.type %>">
+        <i data-lucide="<%= c.icon %>" class="w-4 h-4 text-accent"></i>
+        <%= c.label %>
+      </div>
+    <% }) %>
+  </div>
+</aside>

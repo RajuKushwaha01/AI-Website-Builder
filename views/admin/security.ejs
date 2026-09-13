@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Security • Admin</title>
+  <%- include('../partials/head') %>
+</head>
+<body class="min-h-screen">
+  <%- include('../partials/navbar', { user: admin }) %>
+  <%- include('layout-sidebar', { active: 'security' }) %>
+
+  <main class="lg:ml-64 max-w-4xl mx-auto px-6 pt-28 pb-16">
+    <h1 class="text-3xl font-bold mb-8">Security Overview</h1>
+
+    <div class="grid grid-cols-2 gap-5 mb-8">
+      <div class="card-glass p-5"><p class="text-muted text-sm mb-1">Blocked Users</p><p class="text-2xl font-bold text-red-400"><%= blockedUsers %></p></div>
+      <div class="card-glass p-5"><p class="text-muted text-sm mb-1">Failed AI Attempts</p><p class="text-2xl font-bold text-warning"><%= failedAiAttempts %></p></div>
+    </div>
+
+  <div class="card-glass p-5 mb-8">
+  <h3 class="font-semibold mb-3">AI Provider Configuration</h3>
+  <div class="flex justify-between text-sm py-1.5 border-b border-white/5">
+    <span>Gemini API Key</span>
+    <span class="<%= envStatus.gemini ? 'text-success' : 'text-red-400' %>"><%= envStatus.gemini ? '✓ Configured' : '✗ Missing' %></span>
+  </div>
+  <div class="flex justify-between text-sm py-1.5">
+    <span>OpenRouter API Key</span>
+    <span class="<%= envStatus.openrouter ? 'text-success' : 'text-red-400' %>"><%= envStatus.openrouter ? '✓ Configured' : '✗ Missing' %></span>
+  </div>
+ </div>
+
+    <div class="card-glass p-5">
+      <h3 class="font-semibold mb-3">Recent Failed AI Attempts</h3>
+      <% recentFailedAi.forEach(f => { %>
+        <div class="flex justify-between text-sm py-1.5 border-b border-white/5">
+          <span><%= f.user?.name || 'Unknown' %></span>
+          <span class="text-muted"><%= new Date(f.createdAt).toLocaleString() %></span>
+        </div>
+      <% }) %>
+      <% if (recentFailedAi.length === 0) { %><p class="text-muted text-sm">No failures recorded.</p><% } %>
+    </div>
+  </main>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

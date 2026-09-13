@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Blog • NovaBuilder</title>
+  <%- include('../partials/head') %>
+</head>
+<body class="min-h-screen">
+  <%- include('../partials/navbar') %>
+  <%- include('../partials/sidebar', { active: 'blog' }) %>
+
+  <main class="lg:ml-64 max-w-4xl mx-auto px-6 pt-28 pb-16">
+    <div class="flex items-center justify-between mb-8">
+      <h1 class="text-3xl font-bold">Blog — <%= website.name %></h1>
+      <button id="newPostBtn" class="btn-primary text-sm py-2 px-5">+ New Post</button>
+    </div>
+
+    <div id="newPostForm" class="card-glass p-6 space-y-3 mb-8 hidden">
+      <input id="postTitle" type="text" class="input-field" placeholder="Post title" />
+      <textarea id="postContent" rows="5" class="input-field" placeholder="Write your post..."></textarea>
+      <div class="grid grid-cols-2 gap-3">
+        <input id="postCategory" type="text" class="input-field" placeholder="Category" />
+        <input id="postTags" type="text" class="input-field" placeholder="Tags (comma separated)" />
+      </div>
+      <input id="postAuthor" type="text" class="input-field" placeholder="Author" />
+      <button id="savePostBtn" class="btn-primary">Save Post</button>
+    </div>
+
+    <div class="space-y-3">
+      <% posts.forEach(post => { %>
+        <div class="card-glass p-5 flex items-center justify-between">
+          <div>
+            <p class="font-semibold"><%= post.title %></p>
+            <p class="text-xs mt-1 <%= post.status === 'published' ? 'text-success' : 'text-warning' %>">● <%= post.status %></p>
+          </div>
+          <div class="flex gap-2 text-sm">
+            <% if (post.status === 'published') { %>
+              <button class="btn-glass py-1.5 px-3 unpublish-post" data-id="<%= post._id %>">Unpublish</button>
+            <% } else { %>
+              <button class="btn-glass py-1.5 px-3 text-success publish-post" data-id="<%= post._id %>">Publish</button>
+            <% } %>
+            <button class="btn-glass py-1.5 px-3 text-red-400 delete-post" data-id="<%= post._id %>">Delete</button>
+          </div>
+        </div>
+      <% }) %>
+      <% if (posts.length === 0) { %><p class="text-muted">No posts yet.</p><% } %>
+    </div>
+  </main>
+
+  <script>
+    window.CSRF_TOKEN = "<%= csrfToken %>";
+    window.WEBSITE_ID = "<%= website._id %>";
+
+    document.getElementById("newPostBtn").addEventListener("click", () => {
+      document.getElementById("newPostForm").classList.toggle("hidden");
+    });
+
+    document.getElementById("savePostBtn").addEventListener("click", async () => {
+      const res = await fetch("/blog/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          _csrf: window.CSRF_TOKEN,
+          websiteId: window.WEBSITE_ID,
+          title: document.getElementById("postTitle").value,
+          content: document.getElementById("postContent").value,
+          category: document.getElementById("postCategory").value,
+          tags: document.getElementById("postTags").value,
+          author: document.getElementById("postAuthor").value
+        })
+      });
+      const data = await res.json();
+      if (data.success) window.location.reload();
+    });
+
+    document.querySelectorAll(".publish-post, .unpublish-post, .delete-post").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const id = btn.dataset.id;
+        let action = "publish";
+        if (btn.classList.contains("unpublish-post")) action = "unpublish";
+        if (btn.classList.contains("delete-post")) {
+          action = "delete";
+          if (!confirm("Delete this post?")) return;
+        }
+        await fetch(`/blog/${id}/${action}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ _csrf: window.CSRF_TOKEN })
+        });
+        window.location.reload();
+      });
+    });
+  </script>
+  <script src="/js/main.js"></script>
+</body>
+</html>
